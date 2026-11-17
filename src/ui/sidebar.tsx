@@ -20,22 +20,23 @@ import { getLang, L, setLang } from "./i18n";
 
 export interface SectionDef {
   id: string;
-  title: string;
+  /** A function, so the title follows the language toggle. */
+  title: () => string;
   icon: string;
 }
 
 export const SECTIONS: SectionDef[] = [
-  { id: "", title: L("Overview", "Сводка"), icon: "LayoutDashboard" },
-  { id: "pods", title: L("Pods", "Поды"), icon: "Box" },
-  { id: "deployments", title: L("Deployments", "Деплойменты"), icon: "Layers" },
-  { id: "rollout", title: L("Rollout check", "Проверка выката"), icon: "RotateCcw" },
-  { id: "jobs", title: L("Jobs & CronJobs", "Jobs и CronJobs"), icon: "Timer" },
-  { id: "network", title: L("Services & Ingress", "Сервисы и Ingress"), icon: "Network" },
-  { id: "argocd", title: "ArgoCD", icon: "GitBranch" },
-  { id: "nodes", title: L("Nodes", "Ноды"), icon: "Server" },
-  { id: "storage", title: L("Storage (PVC)", "Хранилище (PVC)"), icon: "HardDrive" },
-  { id: "port-forwards", title: L("Port-forwards", "Проброс портов"), icon: "ArrowRightLeft" },
-  { id: "events", title: L("Events", "События"), icon: "Activity" },
+  { id: "", title: () => L("Overview", "Сводка"), icon: "LayoutDashboard" },
+  { id: "pods", title: () => L("Pods", "Поды"), icon: "Box" },
+  { id: "deployments", title: () => L("Deployments", "Деплойменты"), icon: "Layers" },
+  { id: "rollout", title: () => L("Rollout check", "Проверка выката"), icon: "RotateCcw" },
+  { id: "jobs", title: () => L("Jobs & CronJobs", "Jobs и CronJobs"), icon: "Timer" },
+  { id: "network", title: () => L("Services & Ingress", "Сервисы и Ingress"), icon: "Network" },
+  { id: "argocd", title: () => "ArgoCD", icon: "GitBranch" },
+  { id: "nodes", title: () => L("Nodes", "Ноды"), icon: "Server" },
+  { id: "storage", title: () => L("Storage (PVC)", "Хранилище (PVC)"), icon: "HardDrive" },
+  { id: "port-forwards", title: () => L("Port-forwards", "Проброс портов"), icon: "ArrowRightLeft" },
+  { id: "events", title: () => L("Events", "События"), icon: "Activity" },
 ];
 
 /** Per-namespace pod totals and problems, for the namespace picker. */
@@ -294,7 +295,7 @@ export function KubeSidebar({ subPath }: { subPath: string }) {
               )}
             >
               <Icon name={`kube-${s.icon}`} className="size-4 shrink-0" />
-              <span className="min-w-0 flex-1 truncate">{s.title}</span>
+              <span className="min-w-0 flex-1 truncate">{s.title()}</span>
               {c && c.problems > 0 ? (
                 <span className="rounded-full bg-destructive/15 px-1.5 text-[11px] font-medium text-destructive">{c.problems}</span>
               ) : null}

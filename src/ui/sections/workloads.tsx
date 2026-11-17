@@ -235,7 +235,7 @@ export function PodsSection({ snapshot, readOnly }: SectionProps) {
   const metrics = useResource("metrics");
   const filtered = useMemo(
     () => filterPods(snapshot.pods, m, { problemsOnly: m.filters.problemsOnly }),
-    [snapshot.pods, m],
+    [snapshot.pods, m.ns, m.text, m.filters],
   );
   return (
     <>

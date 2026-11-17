@@ -199,7 +199,7 @@ export function PortForwardsSection({ snapshot }: SectionProps) {
             snapshot.pods.filter((p) => p.namespace === w.namespace && p.workload?.name === w.name),
           ),
       }));
-  }, [kind, snapshot, m]);
+  }, [kind, snapshot, m.ns, m.text, m.filters]);
   const chosen = candidates.find((c) => c.key === target) ?? candidates[0];
 
   const rowTone = (p: PortForward) => (p.status === "running" ? "good" : p.status === "starting" ? "info" : p.status === "error" ? "bad" : "muted");

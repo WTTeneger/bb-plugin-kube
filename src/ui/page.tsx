@@ -144,7 +144,10 @@ function Overview({ snapshot, readOnly }: SectionProps) {
   const storage = useResource("storage");
 
   const pods = filterPods(snapshot.pods, m);
-  const workloads = snapshot.workloads.filter((w) => m.ns(w.namespace) && m.text(`${w.namespace}/${w.name}`));
+  const workloads = useMemo(
+    () => snapshot.workloads.filter((w) => m.ns(w.namespace) && m.text(`${w.namespace}/${w.name}`)),
+    [snapshot.workloads, m.ns, m.text, m.filters],
+  );
   const running = pods.filter((p) => p.phase === "Running").length;
   const badPods = pods.filter((p) => toneForPod(p) === "bad");
   const pendingPods = pods.filter((p) => toneForPod(p) === "warn" && !p.healthy);

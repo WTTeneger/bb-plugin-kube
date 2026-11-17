@@ -729,7 +729,24 @@ export default async function plugin(bb: BbPluginApi) {
       const flagValue = (name: string) =>
         argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
       const [command, ...args] = argv.filter((a) => !a.startsWith("--"));
-      const out = (value: unknown, text: string) => ({ exitCode: 0, stdout: clip(json ? JSON.stringify(value) : text) });
+      const out = (value: unknown, text: string) => {
+        if (!json) return { exitCode: 0, stdout: clip(text) };
+        const full = JSON.stringify(value);
+        if (full.length <= MAX || !Array.isArray(value)) return { exitCode: 0, stdout: full.length <= MAX ? full : clip(full) };
+        // Keep the output parseable: drop items from the end instead of cutting the string.
+        let lo = 0;
+        let hi = value.length;
+        while (lo < hi) {
+          const mid = Math.ceil((lo + hi) / 2);
+          if (JSON.stringify(value.slice(0, mid)).length <= MAX) lo = mid;
+          else hi = mid - 1;
+        }
+        return {
+          exitCode: 0,
+          stdout: JSON.stringify(value.slice(0, lo)),
+          stderr: `Output truncated to ${lo} of ${value.length} items; narrow it with "bb kube select <context> <namespace>" or --unhealthy.`,
+        };
+      };
       try {
         switch (command) {
           case undefined:

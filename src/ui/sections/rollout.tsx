@@ -20,7 +20,7 @@ export function RolloutSection({ snapshot }: SectionProps) {
   const m = useMatchers();
   const namespaces = useMemo(
     () => [...new Set(snapshot.workloads.map((w) => w.namespace))].filter((n) => m.ns(n)).sort(),
-    [snapshot.workloads, m],
+    [snapshot.workloads, m.ns, m.text, m.filters],
   );
   const [namespace, setNamespace] = useState(namespaces[0] ?? "");
   const ns = namespaces.includes(namespace) ? namespace : (namespaces[0] ?? "");
